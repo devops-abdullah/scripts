@@ -1,0 +1,26 @@
+/var/log/asterisk/queue_log {
+        daily
+        missingok
+        # Customization: increase log retention time from the default 30 days to 60 days
+        rotate 30
+        notifempty
+        sharedscripts
+        #create 0640 asterisk asterisk
+}
+/var/spool/mail/asterisk
+/var/log/asterisk/messages
+/var/log/asterisk/full
+        daily
+        missingok
+        # Customization: increase log retention time from the default 7 days to 60 days
+        #rotate 7
+        rotate 30
+        # Customization: compress log files to save disk space
+        compress
+        notifempty
+        sharedscripts
+        #create 0640 asterisk asterisk
+        postrotate
+        /usr/sbin/asterisk -rx 'logger reload' > /dev/null 2> /dev/null
+        endscript
+}
