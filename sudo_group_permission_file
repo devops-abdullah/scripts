@@ -1,0 +1,32 @@
+user: akkash shahid zawar
+passwd: should be same as name
+force to change passwd at first login
+group: intellicon_mgmt
+create file: /etc/sudoers.d/intellicon_mgmt
+content of file:
+>>>>>>>>>>>>>
+#Sudo Permission File
+#Created by Abdullah Manzoor
+##############################
+
+#Allow user to use Intellicon management command
+
+##Cmnd_Alias    AIRCRACK = /usr/sbin/airdriver-ng, /usr/sbin/airep$
+Cmnd_Alias    CAPTURE = /usr/sbin/tcpdump
+Cmnd_Alias    NETWORK = /sbin/ifconfig, /sbin/ifdown, /sbin/ifup
+##Cmnd_Alias    IPTABLES = /sbin/iptbales, /sbin/iptables-restore
+Cmnd_Alias    SERVERS = /usr/bin/systemctl, /etc/init.d/agispeedy, /bin/systemctl, /usr/bin/journalctl, /bin/tailf, /usr/sbin/asterisk, /usr/local/bin/pm2, /bin/pm2, /sbin/service, /etc/init.d, /usr/bin/scl, /usr/local/bin/node, /usr/bin/node, /usr/bin/npm
+#Cmnd_Alias     SETENV:  /usr/bin/make, /bin/echo
+
+Defaults    secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/X11/bin"
+Defaults!/bin/build.sh setenv,env_reset,env_delete+=PATH,env_delete+=LD_PRELOAD,env_delete+=LD_LIBRARY_PATH,env_delete+=SSH_AUTH_SOCK,env_delete+=PYTHONPATH,env_delete+=PERL5LIB
+%intellicon_mgmt  ALL=(ALL) NOPASSWD: /bin/build.sh *
+
+#Cmnd_Alias    LEVEL1  = CAPTURE
+#Cmnd_Alias    LEVEL2  = CAPTURE, IPTABLES
+Cmnd_Alias    LEVEL1  = CAPTURE, SERVERS, NETWORK, SETENV
+
+%intellicon_mgmt  ALL=LEVEL1
+<<<<<<<<<<<<<<<
+
+assigne group intellicon_mgmt to all users
