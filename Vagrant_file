@@ -1,0 +1,110 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.define "db1" do |db1|
+    config.vm.box = "centos/7"
+      db1.vm.network "private_network", ip: "1.1.1.1"
+#      db1.vm.network "public_network"
+      #config.vm.provider "virtualbox" do |db1|
+      #db1.memory = "1024"
+      #db1.cpu = "2"
+      config.vm.provision "shell", inline: <<-SHELL
+      #yum install -y httpd mod_ssl
+	  #yum install -y pacemaker pcs fence-agents-all psmisc policycoreutils-python
+	  nmtui-hostname db1
+      #   apt-get install -y apache2
+      SHELL
+end
+
+
+  config.vm.define "db2" do |db2|
+    config.vm.box = "centos/7"
+      db2.vm.network "private_network", ip: "1.1.1.2"
+      db2.vm.network "public_network"
+      config.vm.provision "shell", inline: <<-SHELL
+      #yum install -y httpd mod_ssl
+	  #yum install -y pacemaker pcs fence-agents-all psmisc policycoreutils-python
+	  yum install -y 'http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm'
+	  rpm --import /etc/pki/rpm-gpg/PERCONA-PACKAGING-KEY
+	  yum install -y Percona-Server-server-56.x86_64 Percona-Server-client-56.x86_64 Percona-Server-devel-56.x86_64
+	  #nmtui-hostname db2
+      #   apt-get install -y apache2
+      SHELL
+      
+end
+
+config.vm.define "db3" do |db3|
+    config.vm.box = "centos/7"
+      db3.vm.network "private_network", ip: "1.1.1.3"
+      db3.vm.network "public_network"
+      config.vm.provision "shell", inline: <<-SHELL
+      #yum install -y httpd mod_ssl
+	  #yum install -y pacemaker pcs fence-agents-all psmisc policycoreutils-python
+	  #nmtui-hostname db3
+      #   apt-get install -y apache2
+	  yum install -y 'http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm'
+	  rpm --import /etc/pki/rpm-gpg/PERCONA-PACKAGING-KEY
+	  yum install -y Percona-Server-server-56.x86_64 Percona-Server-client-56.x86_64 Percona-Server-devel-56.x86_64
+      SHELL
+      
+end
+
+config.vm.define "db4" do |db4|
+    config.vm.box = "centos/7"
+      db4.vm.network "private_network", ip: "1.1.1.4"
+      db4.vm.network "public_network"
+      config.vm.provision "shell", inline: <<-SHELL
+      #yum install -y httpd mod_ssl
+	  #yum install -y pacemaker pcs fence-agents-all psmisc policycoreutils-python
+	  #nmtui-hostname db4
+      #   apt-get install -y apache2
+	  yum install -y 'http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm'
+	  rpm --import /etc/pki/rpm-gpg/PERCONA-PACKAGING-KEY
+	  yum install -y Percona-Server-server-56.x86_64 Percona-Server-client-56.x86_64 Percona-Server-devel-56.x86_64      
+	  SHELL
+      
+end
+
+config.vm.define "db5" do |db5|
+    config.vm.box = "centos/7"
+      db5.vm.network "private_network", ip: "1.1.1.5"
+      db5.vm.network "public_network"
+      config.vm.provision "shell", inline: <<-SHELL
+      #yum install -y httpd mod_ssl
+	  #yum install -y pacemaker pcs fence-agents-all psmisc policycoreutils-python
+	  #nmtui-hostname db4
+      #   apt-get install -y apache2
+	  yum install -y 'http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm'
+	  rpm --import /etc/pki/rpm-gpg/PERCONA-PACKAGING-KEY
+	  yum install -y Percona-Server-server-56.x86_64 Percona-Server-client-56.x86_64 Percona-Server-devel-56.x86_64      
+	  SHELL
+      
+end
+
+ config.vm.define "wb1" do |wb1|
+    config.vm.box = "centos/7"
+      wb1.vm.network "private_network", ip: "1.1.1.3"
+  #    wb1.vm.network "public_network"
+      config.vm.provision "shell", inline: <<-SHELL
+      #yum install -y httpd mod_ssl
+	  #yum install -y pacemaker pcs fence-agents-all psmisc policycoreutils-python
+      nmtui-hostname wb1
+	  #   apt-get install -y apache2
+      SHELL
+      
+end
+
+config.vm.define "wb2" do |wb2|
+    config.vm.box = "centos/7"
+      wb2.vm.network "private_network", ip: "1.1.1.4"
+   #   wb2.vm.network "public_network"
+      config.vm.provision "shell", inline: <<-SHELL
+      #yum install -y httpd mod_ssl
+	  #yum install -y pacemaker pcs fence-agents-all psmisc policycoreutils-python
+	  nmtui-hostname wb2
+	  #   apt-get install -y apache2
+      SHELL
+      
+end
+end
