@@ -1,0 +1,233 @@
+version: '3'
+services:
+##############################################################
+#				Mysql Docker Setting                         #
+##############################################################
+  db:
+    image: mysql:5.7
+    restart: always
+    env_file:
+      - db_env
+    hostname: Database
+    ports:
+      - '3306:3306'
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.2
+    volumes:
+      - database:/var/lib/mysql
+
+##############################################################
+#				MongoDB Docker Setting                       #
+##############################################################
+  mongo:
+    image: mongo:latest
+    restart: always
+    env_file:
+      - app_env
+    ports:
+      - 27017:27017
+    hostname: MongoDB
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.3
+    volumes:
+      - /var/lib/mongo:/data/
+  
+##############################################################
+#				Redis Docker Setting                         #
+##############################################################
+  redis:
+    image: IMAGENAME
+    restart: always
+    env_file:
+      - app_env
+    hostname: Redis
+    ports:
+     - 6379:6379
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.4
+
+##############################################################
+#				RTPEngine Docker Setting    Memory: 200MB    #
+##############################################################
+  rtp:
+    image: IMAGENAME
+    restart: always
+    env_file:
+      - app_env
+    hostname: RTPEngine
+    ports:
+      - 10000-10040/udp
+      - 5050/udp
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.6
+    volumes:
+      - etc:/etc/rtpengine/
+ 
+##############################################################
+#				Opensips Docker Setting                      #
+##############################################################
+  opensips:
+    image: IMAGENAME
+    restart: always
+    env_file:
+      - app_env
+    hostname: Opensips
+    ports:
+       - 10443:10443/tcp
+       - 50606:50606/udp
+       - 5065:5065/udp
+       - 6060:6060/udp
+       - 5080:5080/tcp
+       - 5081:5081/tcp
+    depends_on:
+     - mysql
+     - rtp
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.7
+    volumes:
+       - /etc/opensips/:/etc/opensips/
+
+##############################################################
+#				Admin Docker Setting                         #
+##############################################################
+  admin:
+    image: IMAGENAME
+    restart: always
+    hostname: Application
+    env_file:
+       - app_env
+    ports:
+      - 443
+      - 8443
+    depends_on:
+      - db
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.8
+    volumes:
+      - application:/var/www/html/
+      - /etc/pki/tls:/etc/pki/tls
+      - /etc/httpd:/etc/httpd
+      - /etc/nginx:/etc/nginx
+
+##############################################################
+#			CX9-Servers & Node Docker Setting                #
+##############################################################
+
+
+
+
+
+##############################################################
+#				Node-Admin Docker Setting                    #
+##############################################################
+
+
+
+
+
+
+##############################################################
+#				Tail-Rabbit Docker Setting                   #
+##############################################################
+  tail:
+    image: IMAGENAME
+    restart: always
+    env_file:
+      - app_env
+    hostname: 'Tail'
+    ports:
+      - 15672:15672
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.10
+    depends_on:
+      - db
+    volumes:
+      - tail:/etc/tail
+      - /etc/pki/tls:/etc/pki/tls
+      - /var/log/asterisk:/var/log/asterisk/
+      
+##############################################################
+#				Asterisk Docker Setting                      #
+##############################################################
+
+
+
+
+
+
+
+
+
+
+
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.11
+
+
+
+##############################################################
+#				ISOTOP Docker Setting                        #
+##############################################################
+  reverse-proxy:
+    image: devopsengineerabdullah/traefik_mail_client       #image: traefik:1.7
+    command --api --docker
+    ports:
+      - "890:80"
+      - "8181:8080"
+      - "7443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+#      - /usr/local/src/isotope-mail-client/deployment-examples/traefik.toml:/traefik.toml
+#      - /usr/local/src/isotope-mail-client/deployment-examples/certs/:/certs/
+    container_name: traefik
+  
+  isotope-server:
+    image: marcnuri/isotope:server-latest
+    ports:
+      - "9010:9010"
+    labels:
+      - traefik.backend=isotope-server
+      - "traefik.frontend.rule=PathPrefixStrip:/api/"
+
+  isotope-client:
+    image: devopsengineerabdullah/mail-client               #image: marcnuri/isotope:client-latest
+    ports:
+      - "8081:80"
+    labels:
+      - traefik.backend=isotope-client
+      - "traefik.frontend.rule=PathPrefixStrip:/"
+
+
+
+
+
+
+volumes:
+  database:
+  etc:
+  web:
+  node:
+  agi:
+  tail:
+  cx9:
+  
+
+
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+# How to add Host entry in Docker Containter:
+# extra_hosts:
+#   - "host1.com:1.1.1.1"
+#   - "host2.com host3.com host4.com:2.2.2.2" #multiple host on single IP address
