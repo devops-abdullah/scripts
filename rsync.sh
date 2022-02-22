@@ -56,5 +56,7 @@ else
         echo "---------------------------------"
         echo "-     All Directories Synced    -"
         echo "---------------------------------"
-
+        
+        # Removing PID file on success....!
+        rm -rf $PID
 fi
