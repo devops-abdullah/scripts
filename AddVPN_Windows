@@ -1,0 +1,10 @@
+#### VPN For Windows
+### Without Default Gateway
+## Add Route over the VPN connection
+
+# -SplitTunneling = Remove Defalt Gateway Option from VPN
+# -RememberCredential = Bolean Value (True/False)
+# For further info please go through the Doc: https://docs.microsoft.com/en-us/powershell/module/vpnclient/add-vpnconnection?view=windowsserver2022-ps
+
+Add-VpnConnection -Name "Intellicon_VPN" -ServerAddress "22.12.169.20" -RememberCredential -SplitTunneling
+Add-VpnConnectionRoute -ConnectionName "Kalpay_Intellicon" -DestinationPrefix "1.1.1.2/32" -PassThru
