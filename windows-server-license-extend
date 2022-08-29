@@ -1,0 +1,11 @@
+## Reference:
+# https://sid-500.com/2017/08/08/windows-server-2016-evaluation-how-to-extend-the-trial-period/
+
+Run the following command to check the existing license
+
+Open Powershell
+
+slmgr -dlv # showup the existing license
+slmgr -rearm # Update the to next 180 days
+
+Restart the Server to take affect:
