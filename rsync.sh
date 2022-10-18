@@ -6,6 +6,7 @@ echo "Company       :   Contegris Pvt. Ltd"
 echo "Department    :   Infrastructure & DevOps"
 
 HOSTIP="1.1.1.1"
+PORT="--rsh='ssh -p22'"
 PID=/var/run/rsync_sh.pid
 
 HTML=/var/www/html/intellicon
@@ -35,23 +36,23 @@ else
 
         #echo "Running rsync on $HTML Directory...."
         #echo "Syncing Application...."
-        #rsync -arv $int_exclude $HTML $HOSTIP:/var/www/html/
-        #rsync -arunv $int_exclude $HTML $HOSTIP:/var/www/html/
+        #rsync $PORT -arv $int_exclude $HTML $HOSTIP:/var/www/html/
+        #rsync $PORT -arunv $int_exclude $HTML $HOSTIP:/var/www/html/
 
-        #rsync -av $cx9_ecosystem ~/cx9 $HOSTIP:/root/
+        #rsync $PORT -av $cx9_ecosystem ~/cx9 $HOSTIP:/root/
 
         #echo "Running rsync on $AGI Directory...."
         #echo "Syncing AGI...."
-        #rsync -aunv $AGI $HOSTIP:/etc/
+        #rsync $PORT -aunv $AGI $HOSTIP:/etc/
 
         #echo "Running rsync on $TAIL Directory...."
         #echo "Syncing Logger...."
-        #rsync -av $tail_env $tail_db $TAIL $HOSTIP:/etc/
+        #rsync $PORT -av $tail_env $tail_db $TAIL $HOSTIP:/etc/
 
         echo "Running rsync on $RECORDINGS Directory...."
         echo "Syncing Voice Recordings Directory...."
-        rsync --bwlimit=1000 -av  $RECORDINGS $HOSTIP:/var/spool/asterisk/
-        rsync --bwlimit=1000 -av  $RECORDINGS1 $HOSTIP:/var/spool/asterisk/
+        rsync $PORT --bwlimit=1000 -av  $RECORDINGS $HOSTIP:/var/spool/asterisk/
+        rsync $PORT --bwlimit=1000 -av  $RECORDINGS1 $HOSTIP:/var/spool/asterisk/
 
         echo "---------------------------------"
         echo "-     All Directories Synced    -"
