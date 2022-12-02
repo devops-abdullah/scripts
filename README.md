@@ -1,7 +1,7 @@
 # scripts
 
 
-#### Windows Activation
+# Windows Activation
 ## Run the following command
 `slmgr /skms kms.digiboy.ir`
 
