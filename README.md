@@ -22,3 +22,6 @@
 `slmgr /skms kms.digiboy.ir`
 ### Wait for 30 to 60 seconds and then run following command
 `slmgr /ato`
+
+# Important Note
+## Not be responsible for any kind of security attack/data loss or any kind of cyber security thread. Run the above script on your risk.
