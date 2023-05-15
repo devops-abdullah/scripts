@@ -1,0 +1,42 @@
+# Source: https://www.dell.com/support/kbdoc/en-pk/000211866/vxrail-identify-a-failed-disk-physical-slot-from-esxi-cli
+
+Summary: Identify a failed disk physical slot from ESXi CLI
+Article Content
+Instructions
+Log in to the ESXi host via SSH.
+List vSAN disks using this command:
+# esxcli vsan storage list
+Examine the output.
+One of the devices will not reveal any associated UUIDs and the on-disk format version will be reported as <Unknown>:
+For example:
+naa.6000c29c53fc02afe598901871729854
+Device: naa.6000c29c53fc02afe598901871729854
+Display Name: naa.6000c29c53fc02afe598901871729854
+Is SSD: false
+VSAN UUID:
+VSAN Disk Group UUID:
+VSAN Disk Group Name:
+Used by this host: false
+In CMMDS: false
+On-disk format version: <Unknown>
+Deduplication: false
+Compression: false
+Checksum:
+Checksum OK: false
+Is Capacity Tier: false
+ 
+To identify the failed disk physical slot.
+From the ESXi SSH, run these commands:
+ 
+# esxcli storage core device physical get -d <naa iddentifier device>
+# esxcli storage core device raid list -d <naa iddentifier device>
+
+The command and example output is:
+ 
+# esxcli storage core device physical get -d naa.6000c29c53fc02afe598901871729854
+ Physical Location: enclosure 2, slot 5
+
+Or 
+ 
+# esxcli storage core device raid list -d naa.6000c29c53fc02afe598901871729854
+ Physical Location: enclosure 2, slot 5
