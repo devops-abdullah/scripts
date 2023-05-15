@@ -40,3 +40,6 @@ Or
  
 # esxcli storage core device raid list -d naa.6000c29c53fc02afe598901871729854
  Physical Location: enclosure 2, slot 5
+
+
+Source2: https://akademiadatacenter.pl/vmware/check-physical-disk-bay-using-naa-identifier-in-esxi/
