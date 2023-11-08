@@ -157,3 +157,50 @@ Create Whole setup in Virtaul enviorment:
 	Winbox and SSH Port should not be default on Router and Switch as well
 	Install the Linux Enviorment as Client with Minimal OS (Centos7/Debian11/Ubuntu20.04)
 	Enable the SSH from ISP1 to the both machine and only for 192.168.50.135 and your PC IP through List
+
+
+======================== For DevOps / SysOps ========================
+Create Two following VMs:
+	- Docker Build VM (Debian-11)
+	- Staging Server (Ubuntu-20.04)
+	
+Create account on Docker HUB
+
+Run the following tasks on Docker Build VM: (Upload the Dockerfile for reference)
+
+	- Build Custom Docker Image:
+		- Default Root path for site should be /var/www/html
+		- Defatul port should be 8080
+		- Expose the 8080
+
+Run the following tasks on Docker Build VM: (Mention the Docker Pull request in answer section)
+
+	- Push the Docker image to Docker Hub with Tag-name: nginx:1.0
+
+Run the following tasks on Docker Staging Server VM: (Add Screen Shot for reference of Nginx-Network inspections)
+
+	- Create a network with the name of Nginx-Network
+		- Subnet 172.172.17.0/24
+		- Gateway should be 172.172.17.254
+
+Run the following tasks on Docker Staging Server VM: (Add Screen Shot for reference of volumes inspections)
+
+	- Create the following volumes:
+			. nginx-etc
+			. nginx-site
+
+Run the following tasks on Docker Staging Server VM: (Deploy the Docker Container through Bash script an upload file for reference)
+
+	- Run the nginx:1.0 container with the following parameters:
+		- Attach Nginx-Network with container
+		- Copy the site code from the following git link: https://github.com/devops-abdullah/docker-test.git
+		- Mount /etc/nginx => nginx-etc
+		- Mount /var/www/html => nginx-site
+		- Container should remain up and running after VM reboot
+		- Map 8080 external port
+		
+Run the following tasks on Docker Staging Server VM: (Upload Docker-Compose file)
+	- Build a Docker-compose file with all above opetions
+		- Map 8081 external port in docker-compose file
+
+
