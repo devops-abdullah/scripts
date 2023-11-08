@@ -1,0 +1,6 @@
+openssl req -x509 \
+            -sha256 -days 20000 \
+            -nodes \
+            -newkey rsa:2048 \
+            -subj "/CN=localhost.localhost/C=PK/L=LocalHost" \
+            -keyout /etc/pki/tls/private/localhost.key -out /etc/pki/tls/certs/localhost.crt 
