@@ -1,0 +1,159 @@
+##############################################
+Can Use VMware WorkStation/Oracal Virtual Box
+##############################################
+
+1. Setup a Centos7 VM with following specification
+	1. RAM 2-GB
+	2. HD 20-GB Total
+		- 10-GB on Root
+		- 5 GB on /var
+		- 3 GB on /var/log
+	Enable Internet on the machine
+	Enable a Local-Loop-Back Interface on the VM with following IP subnet:
+		- 10.17.19.0/24 (This should be accessible from the PC)
+	
+2. Install Docker and Docker Compose on the Machine
+3. Setup a WEB server under the Container
+4. Web server page should be accessible only from 10.17.19.0/24 network
+5. Create a user for administration with name (admin)
+6. Root user will not be allowed to direct SSH access to machine
+7. Set the container to start on reboot
+8. Set a process to check out the ping to 8.8.8.8 after every 1 minute and log the activity with date and time under /var/log/internet-check-logs
+9. Creat bash script
+	- On the start Ask the Name
+	- Create the 100 Directories under /tmp with name (1,2,3,4.....,100)
+
+------------------------------------------------------------------------------------
+1. Setup the Jenkins
+2. Attach a worker Node with Jenkins
+3. Create a Free Style Pipeline for CI/CD Implementation
+4. Setup a Git Repo on Git Hub
+5. Write the (hello world) web page on git
+6. Integrate the CI/CD chain with above worker node
+7. CI will be automated and build docker as web server with above repo.
+
+------------------------------------------------------------------------------------
+1. Setup the Jenkins from scratch in Docker Enviorment
+	- Data should be available after reboot
+2. Attach a worker Node with Jenkins
+3. Create a Free Style Pipeline for CI/CD Implementation
+4. Setup a Git Repo on Git Hub
+5. Write the (hello world) web page on git
+6. Integrate the CI/CD chain with above worker node
+7. CI will be automated.
+8. For CD ask to user for yes/no as input in Pipeline
+	After yes Code should be deployed on the worker node automatically
+	After no email should be shoot to your email address
+
+------------------------------------------------------------------------------------
+1. Setup Docker Private Registry with nginx proxy and SSL
+2. Registry URL should not contain any port
+3. Docker pull or push should be on URL with out any port | Example(https://docker.io/v2/testing:latest)
+4. Setup the Full CI and CD chain with this private Docker Registry
+5. All setup should be Containerized
+6. All Setup should be in Docker-compose file
+
+------------------------------------------------------------------------------------
+1. Setup a Docker Swarm Cluster with Single Node
+2. Add 3 Wroker nodes in this cluster
+3. Setup Portainer service on this cluster
+	Portainer should only be mapped on Managere node
+	All other nodes should be added automatically on portainer
+4. Deploy Jenkins,Private Docker Registry on this cluster
+
+
+
+
+
+
+
+
+=====================================================================
+Network & Infrastructure Engineer:
+	-	Having Strong Knowledge of Routing/Switching
+		-	VLAN
+		-	Trunking
+		-	Static Routing
+		-	OSPF
+		-	BGP
+	-	Having Strong Knowledge of Virtualization (Esxi, vCenter, Hypervisor)
+		-	Esxi Knowledge
+		-	VSAN Knowledge
+		-	vCenter Knowledge
+		- 	VDS Knowledge
+		-	Virtaul Switching Knowledge
+
+Troubleshooting, Linux System Administration, Windows System Administraton, working experience with Asterisk / Call Center and CRM will be a plus.
+
+DevOps Engineer:
+	-	Having strong knowledge of Linux System Administration
+		-	CentOS, RedHad, Debian, Ubuntu
+		-	Network Knowledge (Routing, Switching, Proxies)
+		-	Hostbase firewalls
+
+
+
+##############################################
+Can Use VMware WorkStation/Oracal Virtual Box
+##############################################
+
+MikroTik
+	Set 2 ISPs as WAN
+		ISP1 IP: 192.168.50.0/24
+	#	ISP2 IP: 
+	
+	Set 2 LAN
+		Set DHCP for each LAN
+		DHCP1: 172.172.10.0/24
+		DHCP2: 172.172.11.0/24
+	Set NAT rule accordingly for all LAN users
+	Set Routes for All LAN Users for Internet Access
+	Set Policy for Load Balancing 
+	Set Failover Policy between ISP1 and ISP2
+	Set R-NAT for RDP of windows system from 103.8.112.210
+	Block youtube for DHCP1 users
+	Set policy to check LAN users IP address for Facebook
+	Enable SNMP on Router and get logs on Local PC
+	Set SSTP/PPTP/L2TP profiles with single connection policy
+		Create SSTP/PPTP/L2TP users for clients with above created Profiles
+	Set VLAN 10 and VLAN 20 for DHCP1 and DHCP2 respectively
+	PC1 should be the part of VLAN 10
+	PC2 should be the part of VLAN 20
+	
+	
+Create Whole setup in Virtaul enviorment:
+	
+	Set 2 ISPs as WAN
+		ISP1 IP: 192.168.50.0/24
+		ISP2 IP: Should be from NAT Interface
+	
+	Set 2 LAN
+		Set DHCP for each LAN
+		DHCP1: 172.172.10.0/24
+		DHCP2: 172.172.11.0/24
+	
+	Set NAT rule accordingly for all LAN users
+	Set Routes for All LAN Users for Internet Access
+	Set Policy for Load Balancing 
+	Set Failover Policy between ISP1 and ISP2
+	Block youtube for DHCP1 users through Packet Marking
+	Set policy to check LAN users IP address for Facebook through Packet Marking
+	Enable SNMP on Router and get logs on Local PC
+	
+	Set SSTP/PPTP/L2TP profiles with single connection policy
+		Create SSTP/PPTP/L2TP users for clients with above created Profiles
+		VPN Network Pools should be different from exiting Network
+		DNS should only be allowed for VLAN10,VLAN20 user and allow the other through Address List
+		DNS should be block from ISP IPs
+	
+	Set VLAN 10 and VLAN 20 for DHCP1 and DHCP2 respectively
+	PC1 should be the part of VLAN 10
+	PC2 should be the part of VLAN 20
+	Enable the SSH on Switch
+	Set FTP Server for IOS update on Switch
+	Take existing switch config backup and push to FTP server
+	
+	Router and Switch should only be accessible from 192.168.50.135 and your PC IP.
+	Winbox and SSH Port should not be default on Router and Switch as well
+	Install the Linux Enviorment as Client with Minimal OS (Centos7/Debian11/Ubuntu20.04)
+	Enable the SSH from ISP1 to the both machine and only for 192.168.50.135 and your PC IP through List
