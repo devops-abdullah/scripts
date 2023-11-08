@@ -1,0 +1,40 @@
+#####################################################################################################
+
+									                  SAMBA Installation Guide
+
+#####################################################################################################
+
+## Source Link: https://www.youtube.com/watch?v=tgBuvA6J-_8
+
+apt install samba smbclient winbind krb5-config net-tools dnsutils -y
+
+EXAMPLE.NET
+dc1.example.net
+
+samba-tool domain provision --use-rfc2307 --interactive
+
+systemctl disable --now smbd nmbd winbind systemd-resolved.service
+
+cat << EOF > /etc/resolv.conf
+nameserver 1.1.1.1
+nameserver 1.1.1.2
+search example.net
+EOF
+
+systemctl unmask samba-ad-dc.service
+systemctl enable --now samba-ad-dc.service
+
+reboot
+
+################# Client Side Packages / Commands #################
+apt install sssd-tools sssd-ad realmd libnss-sss libpam-sss samba-common-bin adcli adsys -y
+
+realm discover DOMAIN.COM
+realm join DOMAIN.COM
+
+----- If face issue during realm join DOMAIN.COM -----
+cat << EOF > /etc/krb5.conf
+[libdefaults]
+default_realm = DOMAIN.COM
+rdns = false
+EOF
