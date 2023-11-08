@@ -1,0 +1,8 @@
+########## Delete Docker Untaged/Unused Layers from Private Docker Registry ##########
+### Source: https://janethavishka.medium.com/how-to-maintain-a-private-docker-registry-d4f3d291e7d5
+curl -v --silent -H "Accept: application/vnd.docker.distribution.manifest.v2+json" -X GET http://localhost:5000/v2/dev_cx10/admin/manifests/6 2>&1 | grep Docker-Content-Digest | awk '{print ($3)}'
+
+curl -v -X DELETE http://localhost:5000/v2/dev_cx10/admin/manifests/sha256:6fb47ecac91eb13aeaf379e375d5d9c71335dc83355a4d86a3d0ecc97e42a18b
+
+docker exec {Docker Registry Container Name} bin/registry garbage-collect --delete-untagged /etc/docker/registry/config.yml
+docker restart {Docker Registry Container Name}
