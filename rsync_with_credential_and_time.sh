@@ -24,10 +24,14 @@ else
                 chmod 600 "$password_file"
 
                 # Run rsync with the password file and only sync files older than three months
-                for DIR in $OLD_DIRECTORIES; do
-                        cd $DIR && pwd \
-                        && rsync -avz --bwlimit=1000 --password-file="$password_file" "$DIR" "$DEST_USER@$DEST_HOST::$DEST_MODULE"
-                done
+                #for DIR in $OLD_DIRECTORIES; do
+                #        cd $DIR && pwd \
+                #        && rsync -avz --bwlimit=1000 --password-file="$password_file" "$DIR" "$DEST_USER@$DEST_HOST::$DEST_MODULE"
+                #done
+                
+                # Below Command is much better than above For Loop
+                # Below command will sync the Data in Same Directory Structure
+                find "$source_dir" -type d -ctime +90 -exec rsync -avR --bwlimit=1000 --password-file="$password_file" {} "$remote_user@$remote_host::$remote_dir/" \;
                 
                 # Clean up the temporary password file
                 rm -f "$password_file"
