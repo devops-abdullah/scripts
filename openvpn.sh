@@ -18,7 +18,7 @@ function checkOS () {
 		source /etc/os-release
 
 		if [[ "$ID" == "debian" ]]; then
-			if [[ ! $VERSION_ID =~ (8|9) ]]; then
+			if [[ ! $VERSION_ID =~ (8|9|11|12) ]]; then
 				echo "⚠️ Your version of Debian is not supported."
 				echo ""
 				echo "However, if you're using Debian >= 9 or unstable/testing then you can continue."
