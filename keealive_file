@@ -1,0 +1,58 @@
+#### Keepalive Config
+! Configuration File for keepalived
+
+vrrp_instance VI_SBC {
+  
+  state BACKUP
+  nopreempt
+  priority 100
+
+interface ens192
+  virtual_router_id 51
+  advert_int 1
+  authentication {
+    auth_type PASS
+    auth_pass 11111
+  }
+  virtual_ipaddress {
+    192.168.1.10/24 dev ens192
+
+  }
+    notify_master "/etc/keepalived/failover.sh MASTER"
+    notify_backup "/etc/keepalived/failover.sh BACKUP"
+#    notify_fault "/bin/echo 'now fault' > /tmp/keepalived.state"
+}
+##############################################################################################################################################
+#### Keepalive Notify Script => to start and stop the services with VIP
+#!/bin/bash
+
+# Define state tracking files
+MASTER_STATE_FILE="/tmp/services_master_state"
+BACKUP_STATE_FILE="/tmp/services_backup_state"
+
+# Check if this server is the master or backup based on the argument passed
+if [ "$1" == "MASTER" ]; then
+    # If the server is MASTER, check if the PM2 services have already been started
+    if [ ! -f "$MASTER_STATE_FILE" ]; then
+        # Start PM2 services and create a state file to prevent repeat starts
+        ifup ens256      ### Can Updown the Interface incase required like if we are using SIP settings or same IP address for both servers
+        cd /root/{path to project Directory} && pm2 start config.js
+        sleep 2
+        systemctl restart {asterisk,redis}   ### We can add more services by comma separated
+        sleep 2
+        cd /etc/{path to project Directory} && node starter.js 
+        touch "$MASTER_STATE_FILE"  # Mark as started
+        rm -f "$BACKUP_STATE_FILE"  # Ensure backup state is cleared
+    fi
+elif [ "$1" == "BACKUP" ]; then
+    # If the server is BACKUP, check if the PM2 services have already been stopped
+    if [ ! -f "$BACKUP_STATE_FILE" ]; then
+        # Stop PM2 services and create a state file to prevent repeat stops
+        pm2 stop all 
+        sleep 2
+        systemctl stop {asterisk,redis}      ### We can add more services by comma separated
+        ifdown ens256    ### Can Updown the Interface incase required like if we are using SIP settings or same IP address for both servers
+        touch "$BACKUP_STATE_FILE"  # Mark as stopped
+        rm -f "$MASTER_STATE_FILE"  # Ensure master state is cleared
+    fi
+fi
