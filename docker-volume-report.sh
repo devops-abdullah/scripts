@@ -38,6 +38,19 @@ for vol in $volumes; do
   printf "%-30s %-10s %-10s\n" "$vol" "${human_size:-0B}" "$status"
 done
 
+MYSQL_CONTAINER="mysql"
+MYSQL_DIR=$(docker inspect "$MYSQL_CONTAINER" \
+  --format '{{range .Mounts}}{{if eq .Destination "/var/lib/mysql"}}{{.Source}}{{end}}{{end}}' 2>/dev/null)
+
+if [ -n "$MYSQL_DIR" ] && [ -d "$MYSQL_DIR" ]; then
+  mysql_size=$(du -sb "$MYSQL_DIR" 2>/dev/null | awk '{print $1}')
+  mysql_hr=$(numfmt --to=iec "${mysql_size:-0}")
+  total_size_bytes=$((total_size_bytes + ${mysql_size:-0}))
+  printf "%-30s %-10s %-10s\n" "mysql-datadir" "$mysql_hr" "BIND-MOUNT"
+else
+  printf "%-30s %-10s %-10s\n" "mysql-datadir" "N/A" "NOT-FOUND"
+fi
+
 echo "--------------------------------------------------------------"
 
 # Convert bytes → human-readable total
@@ -68,3 +81,63 @@ else
 fi
 
 echo "=========================================="
+
+# ==========================================================
+#  Container Logs Usage
+# ==========================================================
+echo ""
+echo "=========================================="
+echo " Container Logs Usage"
+echo "=========================================="
+
+containers=$(docker ps -aq)
+total_logs_bytes=0
+
+if [ -z "$containers" ]; then
+  echo "No containers found."
+else
+  printf "%-35s %-10s %-10s %-10s\n" "CONTAINER" "LOG SIZE" "DRIVER" "STATE"
+  echo "--------------------------------------------------------------"
+
+  log_rows=()
+  while IFS='|' read -r cid cname logpath driver state; do
+    cname=${cname#/}           # docker prefixes names with '/'
+    log_bytes=0
+
+    case "$driver" in
+      json-file)
+        # include rotated files: <id>-json.log, .1, .2 ...
+        [ -n "$logpath" ] && log_bytes=$(du -cb "${logpath}"* 2>/dev/null | awk 'END{print $1}')
+        ;;
+      local)
+        log_bytes=$(du -sb "/var/lib/docker/containers/${cid}/local-logs" 2>/dev/null | awk '{print $1}')
+        ;;
+      *)
+        log_bytes=-1           # journald/syslog/etc: not stored as files under docker
+        ;;
+    esac
+
+    if [ "$log_bytes" -ge 0 ] 2>/dev/null; then
+      total_logs_bytes=$((total_logs_bytes + ${log_bytes:-0}))
+      log_rows+=("${log_bytes:-0}|${cname}|$(numfmt --to=iec "${log_bytes:-0}")|${driver}|${state}")
+    else
+      log_rows+=("0|${cname}|N/A|${driver}|${state}")
+    fi
+  done < <(docker inspect --format '{{.Id}}|{{.Name}}|{{.LogPath}}|{{.HostConfig.LogConfig.Type}}|{{.State.Status}}' $containers)
+
+  # largest first
+  printf '%s\n' "${log_rows[@]}" | sort -t'|' -k1,1nr | \
+    while IFS='|' read -r _ name hr drv st; do
+      printf "%-35s %-10s %-10s %-10s\n" "$name" "$hr" "$drv" "$st"
+    done
+
+  echo "--------------------------------------------------------------"
+  echo " Total Logs Size: $(numfmt --to=iec "$total_logs_bytes")"
+fi
+
+echo "--------------------------------------------------------------"
+echo " Total Volume Size: $total_hr"
+echo " Total Logs Size: $(numfmt --to=iec "$total_logs_bytes")"
+
+echo " Grand Total (Volumes + Logs): $(numfmt --to=iec $((total_size_bytes + total_logs_bytes)))"
+echo "--------------------------------------------------------------"
